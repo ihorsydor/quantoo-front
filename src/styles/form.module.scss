@@ -1,0 +1,54 @@
+$spacing-2: 16px;
+
+.box {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+    margin-top: $spacing-2;
+    
+
+    .formElementWidth {
+      min-width: 200px;
+      margin-top: $spacing-2;
+      
+    }
+
+    .buttonSpacing {
+      margin-top: $spacing-2;
+    }
+  }
+}
+
+.modal {
+  
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContent {
+
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 20px;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.modalElementWidth {
+  width: 100%;
+  margin-top: $spacing-2;
+  
+}
