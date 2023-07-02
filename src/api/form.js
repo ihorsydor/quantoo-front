@@ -25,7 +25,26 @@ export default {
             return false;
         }
     },
-    createNewForm: async form => {
+    createNewForm: form => {
+        fetch(`${baseUrl}/form`, {
+            method: 'POST',
+            body: form
+          })
+            .then(response => {
+              if (response.ok) {
+                console.log('File uploaded successfully');
+                
+              } else {
+                console.error('Error uploading file:', response.statusText);
+                
+              }
+            })
+            .catch(error => {
+              console.error('Error uploading file:', error);
+              
+            });
+    },
+    createImg: async form => {
         try {
             const responseAsBlob = await fetch(`${baseUrl}/form`, {
                 credentials: 'include',

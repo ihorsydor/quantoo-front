@@ -20,8 +20,18 @@
     width: 100%;
     justify-content: space-between;
 }
+.navContainerUser {
+    width: 100%;
+    justify-content: space-between;
+    background-color: #ffffff;
+}
 
 .userContainer {
     align-items: center;
 }
 
+.userContainer {
+    background-color: #ffffff;
+    padding: 10px;
+    margin-left: auto;
+  }

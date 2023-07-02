@@ -27,18 +27,21 @@ const Frontend = () => {
         </div>
       </div>
       {/* Row 4*/}
+
       <div className="col-lg-12">
         <div className="row">
           <div className={`col-lg-6 ${styles.square}`}>
-            <div className={`row  ${styles.squareDevideCol}`}>
+            <div className={`g-0 row ${styles.squareDevideCol}`}></div>
+            <div className={`g-0 row ${styles.squareDevideCol}`}></div>
+            {/* <div className={`row  ${styles.squareDevideCol}`}>
               <div className={`col ${styles.littleSquare}`}></div>
               <div className={`col ${styles.littleSquare}`}></div>
               <div className={`col ${styles.littleSquare}`}></div>
-            </div>
-            <div className={styles.squareDevideCol}>
+            </div> */}
+            {/* <div className={styles.squareDevideCol}>
               <div className={`col-lg-6 ${styles.littleSquare}`}></div>
             </div>
-            <div className={`col-lg-6 ${styles.square}`}></div>
+            <div className={`col-lg-6 ${styles.square}`}></div> */}
           </div>
           <div className={`col-lg-6 ${styles.square}`}></div>
         </div>

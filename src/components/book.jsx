@@ -1,27 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Button, TextField, Select, MenuItem, Input } from "@mui/material";
-import { Box } from "@mui/material";
-
-import { useForm, Controller } from "react-hook-form";
-
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
 
 import api from "../api/index";
 import styles from "../styles/form.module.scss";
 
-const Book = () => {
-  const [bookData, setBookData] = useState({
+const Form = () => {
+  const [img, setImg] = useState(null);
+  const [input, setInput] = useState({
     name: "",
     publishing: "",
     siteNumber: "",
-    photo: null,
-    author: null,
+    author: '',
   });
 
   const [authors, setAuthors] = useState([]);
-
-  const { control } = useForm();
 
   useEffect(() => {
     api.author
@@ -36,140 +27,89 @@ const Book = () => {
       });
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-console.log(e)
+  const handleImgSelect = (event) => {
+    setImg(event.target.files[0]);
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
     if (name === "author") {
       const selectedAuthor = authors.find((author) => author._id === value);
-      console.log(selectedAuthor)
-      console.log(authors[0]._id)
-      console.log(value)
-      setBookData((prevBookData) => ({
-        ...prevBookData,
+
+      setInput((prevState) => ({
+        ...prevState,
         author: selectedAuthor,
       }));
     } else {
-      setBookData((prevBookData) => ({
-        ...prevBookData,
+      setInput((prevState) => ({
+        ...prevState,
         [name]: value,
       }));
     }
   };
+  const formSubmitHandle = () => {
+    if (img) {
+      const formData = new FormData();
+      formData.append("image", img);
+      formData.append("name", input.name);
+      formData.append("publishing", input.publishing);
+      formData.append("siteNumber", input.siteNumber);
+      formData.append("author", input.author._id);
 
-  const bookSubmitHandle = (e) => {
-    e.preventDefault();
-    api.book
-      .createNewBook(bookData)
-      .then(() => {
-        console.log("Sukces");
-        setBookData({
-          name: "",
-          publishing: "",
-          siteNumber: "",
-          photo: "",
-          author: null,
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      api.book.createNewBook(formData);
+    }
   };
-console.log(bookData.author)
-console.log(bookData)
-  return (
-    <Box className={styles.box}>
-      <form className={styles.form} onSubmit={bookSubmitHandle}>
-        <div className={styles.formElementWidth}>
-          <TextField
-            label="Book name"
-            name="name"
-            value={bookData.name}
-            className={styles.formElementWidth}
-            onChange={handleChange}
-          />
-        </div>
-        <div className={styles.formElementWidth}>
-          <TextField
-            label="Publishing"
-            name="publishing"
-            value={bookData.publishing}
-            className={styles.formElementWidth}
-            onChange={handleChange}
-          />
-        </div>
-        <div className={styles.formElementWidth}>
-          <TextField
-            label="Number of sites"
-            name="siteNumber"
-            value={bookData.siteNumber}
-            className={styles.formElementWidth}
-            onChange={handleChange}
-          />
-        </div>
-        <div className={styles.formElementWidth}>
-          <label htmlFor="btn-upload">
-            <input
-              id="btn-upload"
-              type="file"
-              name="photo"
-              value={bookData.photo}
-              className={styles.formElementWidth}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-{/* 
-        <div style={{ width: "100%" }}>
-          <label htmlFor="author-select">Author</label>
-          <select
-            id="author-select"
-            name="author"
-            value={bookData.author ? bookData.author.id : ""}
-            onChange={handleChange}
-            style={{ width: "100%" }}
-          >
-            <option value="" disabled>
-              Wybierz autora
-            </option>
-            {authors.map((author) => (
-              <option key={author.id} value={author.id}>
-                {author.name}
-              </option>
-            ))}
-          </select>
-        </div> */}
-        <div className={styles.formElementWidth}>
-          <FormControl className={styles.formElementWidth}>
-            <InputLabel id="author-label">Author</InputLabel>
-            <Select
-              labelId="author-label"
-              id="author-select"
-              name="author"
-              value={bookData.author ? bookData.author._id : ""}
-              onChange={handleChange}
-            >
-              <MenuItem value="" disabled>
-                Wybierz autora
-              </MenuItem>
-              {authors.map((author) => (
-                <MenuItem key={author._id} value={author._id}>
-                  {author.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
 
-        <Button
-          variant="contained"
-          type="submit"
-          className={styles.buttonSpacing}
-        >
-          Wyślij
-        </Button>
-      </form>
-    </Box>
+  return (
+    <div className={`${styles.formContainer} mt-4`}>
+  <div className="row">
+    <div className="col">
+      <input className="form-control" name="name" placeholder="Name" style={{ width: '200px' }} onChange={handleInputChange} />
+    </div>
+  </div>
+  <div className="row mt-4">
+    <div className="col">
+      <input className="form-control" name="publishing" placeholder="Publishing" style={{ width: '200px' }} onChange={handleInputChange} />
+    </div>
+  </div>
+  <div className="row mt-4">
+    <div className="col">
+      <input className="form-control" type="number" name="siteNumber" placeholder="Site Number" style={{ width: '200px' }} onChange={handleInputChange} />
+    </div>
+  </div>
+  <div className="row mt-4">
+    <div className="col">
+      <input className="form-control" 
+      name="image" 
+      type="file" 
+      onChange={handleImgSelect} />
+      {img && (
+        <div>
+          <img src={URL.createObjectURL(img)} alt="Uploaded Image" width="100" height="100" />
+        </div>
+      )}
+    </div>
+  </div>
+  <div className="row mt-4">
+    <div className="col">
+      <select className="form-select" name="author" value={input.author._id} onChange={handleInputChange}>
+        <option>Select an author</option>
+        {authors.map((author) => (
+          <option key={author._id} value={author._id}>
+            {author.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  </div>
+  <div className="row mt-4 justify-content-center">
+    <div className="col">
+      <button className="btn btn-primary" onClick={formSubmitHandle}>Upload</button>
+    </div>
+  </div>
+</div>
+
   );
 };
 
-export default Book;
+export default Form;

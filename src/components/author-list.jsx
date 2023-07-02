@@ -4,7 +4,6 @@ import Author from "./author";
 import {
   Table,
   TableBody,
-  TableCell,
   TableContainer,
   TableHead,
   TableRow,
@@ -70,8 +69,15 @@ const AuthorList = () => {
   const handleEditAuthorSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.author.editAuthor(editAuthorData, selectedAuthor._id);
-      console.log(response);
+      const response = await api.author.editAuthor(
+        editAuthorData,
+        selectedAuthor._id
+      );
+      
+
+      const updatedAuthorList = await api.author.getAllAuthors();
+      setAuthorList(updatedAuthorList)
+      console.log(response)
       setEditModalOpen(false);
     } catch (error) {
       console.log(error);
@@ -79,77 +85,104 @@ const AuthorList = () => {
   };
 
   return (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Country</TableCell>
-            <TableCell>Action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
+    <div>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Country</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
           {authorList.map((author, index) => (
-            <TableRow key={index}>
-              <TableCell>{author.name}</TableCell>
-              <TableCell>{author.country}</TableCell>
-              <TableCell>
-                <Button
-                  variant="outlined"
-                  color="secondary"
+            <tr key={index}>
+              <td>{author.name}</td>
+              <td>{author.country}</td>
+              <td>
+                <button
+                  className="btn btn-outline-secondary"
                   onClick={() => handleDelete(author._id)}
                 >
                   Kasuj
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="primary"
+                </button>
+                <button
+                  className="btn btn-outline-primary"
                   onClick={() => handleEditModalOpen(author)}
                 >
                   Edytuj
-                </Button>
-              </TableCell>
-            </TableRow>
+                </button>
+              </td>
+            </tr>
           ))}
-        </TableBody>
-      </Table>
+        </tbody>
+      </table>
       <hr />
-      <Modal
-        className={styles.modal}
-        open={editModalOpen}
-        onClose={handleEditModalClose}
-      >
-        <div className={styles.modalContent}>
-          <h2>Edit Author</h2>
-          <form className={styles.form} onSubmit={handleEditAuthorSubmit}>
-            <div className={styles.modalContent}>
-            <TextField
-              label="Author"
-              name="name"
-              value={editAuthorData.name}
-              onChange={handleEditAuthorChange}
-              className={styles.modalElementWidth}
-            />
-
-            <TextField
-              label="Country"
-              name="country"
-              value={editAuthorData.country}
-              onChange={handleEditAuthorChange}
-              className={styles.modalElementWidth}
-            />
-
-            <Button 
-            variant="contained" 
-            type="submit"
-            className={styles.modalElementWidth}>
-              Save
-            </Button>
+      {selectedAuthor && editModalOpen && (
+        <div className={styles.darkOverlay}>
+          <div
+            className={`${styles.modal}  ${editModalOpen ? "show" : ""}`}
+            tabIndex="-1"
+            role="dialog"
+          >
+            <div
+              className={`${styles.modalContent} modal-dialog`}
+              role="document"
+            >
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h2 className="modal-title">Edit Book</h2>
+                  <button
+                    type="button"
+                    className={`${styles.closeButton} ${styles.closeButtonRound}`}
+                    onClick={handleEditModalClose}
+                  >
+                    <span aria-hidden="true" className={styles.closeIcon}>
+                      &times;
+                    </span>
+                  </button>
+                </div>
+                <form
+                  className={`${styles.form} modal-body`}
+                  onSubmit={(e) => handleEditAuthorSubmit(e)}
+                >
+                  <div className="form-group">
+                    <label htmlFor="authorName">Author name</label>
+                    <input
+                      type="text"
+                      className={`form-control ${styles.formElementWidth}`}
+                      id="authorName"
+                      name="name"
+                      value={editAuthorData.name}
+                      onChange={handleEditAuthorChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="country">Author name</label>
+                    <input
+                      type="text"
+                      className={`form-control ${styles.formElementWidth}`}
+                      id="country"
+                      name="country"
+                      value={editAuthorData.country}
+                      onChange={handleEditAuthorChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <button
+                      type="submit"
+                      className={`btn btn-primary ${styles.modalElementWidth}`}
+                    >
+                      Save
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
-          </form>
+          </div>
         </div>
-      </Modal>
-    </TableContainer>
+      )}
+    </div>
   );
 };
 

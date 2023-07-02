@@ -1,20 +1,5 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/index";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Button,
-  Modal,
-  TextField,
-  Select,
-  MenuItem,
-} from "@mui/material";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
 
 import styles from "./../styles/form.module.scss";
 
@@ -28,6 +13,8 @@ const BookList = () => {
     siteNumber: "",
     photo: null,
     author: "",
+    photoUrl: "",
+    photoName: "",
   });
   const [authors, setAuthors] = useState([]);
 
@@ -36,7 +23,7 @@ const BookList = () => {
       try {
         const response = await api.book.getAllBooks();
         setBookList(response);
-        console.log(response);
+        // console.log(response);
       } catch (error) {
         console.log(error);
       }
@@ -56,9 +43,13 @@ const BookList = () => {
     fetchAuthors();
   }, []);
 
+  
+
   const handleDelete = async (bookId) => {
     try {
-      await api.book.deleteBook(bookId);
+      // console.log(bookId);
+      const bookToDelete = bookList.find((book) => book._id === bookId);
+      await api.book.deleteBook(bookId, bookToDelete.filename);
       setBookList((prevBookList) =>
         prevBookList.filter((book) => book._id !== bookId)
       );
@@ -69,163 +60,239 @@ const BookList = () => {
 
   const handleEditModalOpen = (book) => {
     setSelectedBook(book);
+    // console.log(selectedBook);
     setEditBookData({
       name: book.name,
       publishing: book.publishing,
       siteNumber: book.siteNumber,
-      photo: book.photo,
-      author: book.author.name,
+      photo: book.file,
+      photoUrl: book.imagePath,
+      currantName: book.filename,
+      author: book.author._id,
     });
+    // console.log(editBookData);
     setEditModalOpen(true);
   };
+  // useEffect(() => {
+  //   console.log(selectedBook);
+  // }, [selectedBook]);
 
   const handleEditModalClose = () => {
     setEditModalOpen(false);
+    // console.log(editModalOpen);
   };
 
   const handleEditBookChange = (e) => {
     const { name, value } = e.target;
-    setEditBookData((prevBookData) => ({
-      ...prevBookData,
-      [name]: value,
-    }));
+    if (name === "photo") {
+      const file = e.target.files[0];
+      const photoUrl = URL.createObjectURL(file);
+      setEditBookData((prevBookData) => ({
+        ...prevBookData,
+        photo: file,
+        photoUrl: photoUrl,
+      }));
+    } else {
+      setEditBookData((prevBookData) => ({
+        ...prevBookData,
+        [name]: value,
+      }));
+    }
+    // console.log(editBookData);
   };
 
   const handleEditBookSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await api.book.editBook(editBookData, selectedBook.id);
-      console.log(response);
-      setEditModalOpen(false);
-    } catch (error) {
-      console.log(error);
-    }
+    // console.log(editBookData.author);
+    // console.log(editBookData);
+    const formData = new FormData();
+    formData.append("image", editBookData.photo);
+    formData.append("name", editBookData.name);
+    formData.append("publishing", editBookData.publishing);
+    formData.append("siteNumber", editBookData.siteNumber);
+    formData.append("author", editBookData.author);
+    formData.append("currantName", editBookData.currantName);
+
+    await api.book.editBook(selectedBook._id, formData);
+    const updatedBookList = await api.book.getAllBooks();
+    setBookList(updatedBookList);
+    setEditModalOpen(false);
   };
 
+  console.log(bookList)
+
   return (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Publishing</TableCell>
-            <TableCell>Site Number</TableCell>
-            <TableCell>Photo</TableCell>
-            <TableCell>Author</TableCell>
-            <TableCell>Action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {bookList.map((book, index) => (
-            <TableRow key={index}>
-              <TableCell>{book.name}</TableCell>
-              <TableCell>{book.publishing}</TableCell>
-              <TableCell>{book.siteNumber}</TableCell>
-              <TableCell>
-                <img src={book.photo.url} alt="Book Cover" />
-              </TableCell>
-              <TableCell>{book.author.name}</TableCell>
-              <TableCell>
-                <Button
-                  variant="outlined"
-                  color="secondary"
+    <div>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Publishing</th>
+            <th>Site Number</th>
+            <th>Photo</th>
+            <th>Author</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {console.log(bookList[0])}
+          {bookList ? (bookList.map((book, index) => (
+            <tr key={index}>
+              <td>{book.name}</td>
+              <td>{book.publishing}</td>
+              <td>{book.siteNumber}</td>
+              <td>
+                <img
+                  src={book.imagePath}
+                  className={styles.imageList}
+                  alt={book.name}
+                />
+              </td>
+              <td>{book.author.name}</td>
+              <td>
+                <button
+                  className="btn btn-outline-secondary"
                   onClick={() => handleDelete(book._id)}
                 >
                   Delete
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="primary"
+                </button>
+                <button
+                  className="btn btn-outline-primary"
                   onClick={() => handleEditModalOpen(book)}
                 >
                   Edit
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                </button>
+              </td>
+            </tr>
+          ))
+        ):(
+          <tr>
+          <td colSpan={6}>Loading...</td>
+        </tr>
+        )}
+        </tbody>
+      </table>
       <hr />
-      <Modal
-        className={styles.modal}
-        open={editModalOpen}
-        onClose={handleEditModalClose}
-      >
-        <div className={styles.modalContent}>
-          <h2>Edit Book</h2>
-          <form className={styles.form} onSubmit={handleEditBookSubmit}>
-            <div className={styles.modalContent}>
-              <TextField
-                label="Book name"
-                name="name"
-                value={editBookData.name}
-                className={styles.formElementWidth}
-                onChange={handleEditBookChange}
-              />
-            </div>
-            <div className={styles.formElementWidth}>
-              <TextField
-                label="Publishing"
-                name="publishing"
-                value={editBookData.publishing}
-                className={styles.formElementWidth}
-                onChange={handleEditBookChange}
-              />
-            </div>
-            <div className={styles.formElementWidth}>
-              <TextField
-                label="Number of sites"
-                name="siteNumber"
-                value={editBookData.siteNumber}
-                className={styles.formElementWidth}
-                onChange={handleEditBookChange}
-              />
-            </div>
-            <div className={styles.formElementWidth}>
-              <label htmlFor="photo-upload">
-                <input
-                  id="photo-upload"
-                  type="file"
-                  name="photo"
-                  className={styles.formElementWidth}
-                  onChange={handleEditBookChange}
-                />
-              </label>
-            </div>
-            <div className={styles.formElementWidth}>
-              <FormControl className={styles.formElementWidth}>
-                <InputLabel id="author-label">Author</InputLabel>
-                <Select
-                  labelId="author-label"
-                  id="author-select"
-                  name="author"
-                  value={editBookData.author}
-                  onChange={handleEditBookChange}
+
+      {selectedBook && editModalOpen && (
+        <div className={styles.darkOverlay}>
+          <div
+            className={`${styles.modal}  ${editModalOpen ? "show" : ""}`}
+            tabIndex="-1"
+            role="dialog"
+          >
+            <div
+              className={`${styles.modalContent} modal-dialog`}
+              role="document"
+            >
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h2 className="modal-title">Edit Book</h2>
+                  <button
+                    type="button"
+                    className={`${styles.closeButton} ${styles.closeButtonRound}`}
+                    onClick={handleEditModalClose}
+                  >
+                    <span aria-hidden="true" className={styles.closeIcon}>
+                      &times;
+                    </span>
+                  </button>
+                </div>
+                <form
+                  className={`${styles.form} modal-body`}
+                  onSubmit={(e) => handleEditBookSubmit(e)}
                 >
-                  <MenuItem value="" disabled>
-                    Select an author
-                  </MenuItem>
-                  {authors.map((author) => (
-                    <MenuItem key={author._id} value={author._id}>
-                      {author.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                  <div className="form-group">
+                    <label htmlFor="bookName">Book name</label>
+                    <input
+                      type="text"
+                      className={`form-control ${styles.formElementWidth}`}
+                      id="bookName"
+                      name="name"
+                      value={editBookData.name}
+                      onChange={handleEditBookChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="publishing">Publishing</label>
+                    <input
+                      type="text"
+                      className={`form-control ${styles.formElementWidth}`}
+                      id="publishing"
+                      name="publishing"
+                      value={editBookData.publishing}
+                      onChange={handleEditBookChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="siteNumber">Number of sites</label>
+                    <input
+                      type="number"
+                      className={`form-control ${styles.formElementWidth}`}
+                      id="siteNumber"
+                      name="siteNumber"
+                      value={editBookData.siteNumber}
+                      onChange={handleEditBookChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="photo-current">Current photo:</label>
+                    {editBookData && (
+                      <div>
+                        {console.log(editBookData)}
+                        <img
+                          src={editBookData.photoUrl}
+                          // src={editBookData.photoUrl ? URL.createObjectURL(editBookData.photo) : ""}
+                          id="photo-current"
+                          width="100"
+                          height="100"
+                          alt="Book Cover"
+                        />
+                      </div>
+                    )}
+                    <label htmlFor="photo-upload">Photo</label>
+                    <input
+                      type="file"
+                      id="photo-upload"
+                      name="photo"
+                      className={`form-control ${styles.formElementWidth}`}
+                      onChange={handleEditBookChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="author-select">Author</label>
+                    <select
+                      className={`form-control ${styles.formElementWidth}`}
+                      id="author-select"
+                      name="author"
+                      value={editBookData.author}
+                      onChange={handleEditBookChange}
+                    >
+                      <option value="" disabled>
+                        Select an author
+                      </option>
+                      {authors.map((author) => (
+                        <option key={author._id} value={author._id}>
+                          {author.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <button
+                      type="submit"
+                      className={`btn btn-primary ${styles.modalElementWidth}`}
+                    >
+                      Save
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
-            <div className={styles.formElementWidth}>
-              <Button
-                variant="contained"
-                type="submit"
-                className={styles.modalElementWidth}
-              >
-                Save
-              </Button>
-            </div>
-          </form>
+          </div>
         </div>
-      </Modal>
-    </TableContainer>
+      )}
+    </div>
   );
 };
 
