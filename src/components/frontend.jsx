@@ -12,6 +12,15 @@ import 'swiper/css/scrollbar';
 const Frontend = () => {
   const [bookList, setBookList] = useState([]);
   const [authors, setAuthors] = useState([]);
+  const [chosenBook, setChosenBook] = useState({
+    name: "",
+    publishing: "",
+    siteNumber: "",
+    photo: null,
+    author: "",
+    photoUrl: "",
+    photoName: "",
+  });
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -37,6 +46,19 @@ const Frontend = () => {
     fetchBooks();
     fetchAuthors();
   }, []);
+
+  const previewChosenBook = (book) =>{
+setChosenBook({
+  name: book.name,
+      publishing: book.publishing,
+      siteNumber: book.siteNumber,
+      photo: book.file,
+      photoUrl: book.imagePath,
+      currantName: book.filename,
+      author: book.author._id,
+  });
+console.log(chosenBook)
+  }
 console.log(bookList)
 
   return (
@@ -104,14 +126,26 @@ console.log(bookList)
               </div>
             </div>
             <div class="row g-0" style={{ height: "50%" }}>
-              <div
-                class=" bg-light g-0  text-light"
-                style={{
-                  width: "calc(50%)",
-                  height: 0,
-                  paddingBottom: "calc(50%)",
-                }}
-              ></div>
+            <div
+      className="bg-light g-0 text-light"
+      style={{
+        width: "calc(50%)",
+        height: 0,
+        paddingBottom: "calc(50%)",
+        position: "relative",
+      }}
+    >
+      <img
+        src={chosenBook.photoUrl}
+        style={{
+          position: "absolute",
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+        }}
+        alt="Zdjęcie książki"
+      />
+    </div>
             </div>
           </div>
           <div class="col-md-6 ">
@@ -141,22 +175,20 @@ console.log(bookList)
       onSwiper={(swiper) => console.log(swiper)}
       onSlideChange={() => console.log('slide change')}
     >{bookList.map((book, index) => (
-        <SwiperSlide key={index}>
-          <div 
-          
-         >
-           
+      <SwiperSlide key={index}>
+          <div>
             <img
               src={book.imagePath}
-              // className={styles.imageList}
               alt={book.name}
               id="photo-current"
-                          width="200"
-                          height="200"
-                          
+              width="200"
+              height="200"
+              onClick={() => previewChosenBook(book)}
             />
-          
-            </div></SwiperSlide>
+            <hr/>
+            <button onClick={() => previewChosenBook(book)}>pokaż</button>
+          </div>
+        </SwiperSlide>
         
       ))
     
