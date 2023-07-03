@@ -1,5 +1,6 @@
-import React from "react";
-import styles from "./../styles/frontend.module.scss";
+import React , { useEffect, useState } from "react";
+import api from "../api/index";
+import styles from "./../styles/form.module.scss";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 import 'swiper/swiper-bundle.css';
@@ -9,6 +10,35 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
 const Frontend = () => {
+  const [bookList, setBookList] = useState([]);
+  const [authors, setAuthors] = useState([]);
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await api.book.getAllBooks();
+        setBookList(response);
+        // console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const fetchAuthors = async () => {
+      try {
+        const response = await api.author.getAllAuthors();
+        setAuthors(response);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchBooks();
+    fetchAuthors();
+  }, []);
+console.log(bookList)
+
   return (
     <div>
       <div class="container"></div>
@@ -103,23 +133,35 @@ const Frontend = () => {
       <Swiper
       // install Swiper modules
       modules={[Navigation, Pagination, Scrollbar, A11y]}
-      spaceBetween={50}
+      spaceBetween={30}
       slidesPerView={3}
       navigation
       pagination={{ clickable: true }}
       scrollbar={{ draggable: true }}
       onSwiper={(swiper) => console.log(swiper)}
       onSlideChange={() => console.log('slide change')}
-    >
-      <SwiperSlide><div className="bg-dark" style={{ height: "200px", width:'200px' }}></div></SwiperSlide>
-      <SwiperSlide><div className="bg-dark" style={{ height: "200px", width:'200px' }}></div></SwiperSlide>
-      <SwiperSlide><div className="bg-dark" style={{ height: "200px", width:'200px' }}></div></SwiperSlide>
-      <SwiperSlide><div className="bg-dark" style={{ height: "200px", width:'200px' }}></div></SwiperSlide>
-      <SwiperSlide><div className="bg-dark" style={{ height: "200px", width:'200px' }}></div></SwiperSlide>
-      <SwiperSlide><div className="bg-dark" style={{ height: "200px", width:'200px' }}></div></SwiperSlide>
-      <SwiperSlide><div className="bg-dark" style={{ height: "200px", width:'200px' }}></div></SwiperSlide>
-      <SwiperSlide><div className="bg-dark" style={{ height: "200px", width:'200px' }}></div></SwiperSlide>
-      
+    >{bookList.map((book, index) => (
+        <SwiperSlide key={index}>
+          <div 
+          
+         >
+           
+            <img
+              src={book.imagePath}
+              // className={styles.imageList}
+              alt={book.name}
+              id="photo-current"
+                          width="200"
+                          height="200"
+                          
+            />
+          
+            </div></SwiperSlide>
+        
+      ))
+    
+    }
+     
     </Swiper>
     </div>
   );
