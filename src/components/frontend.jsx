@@ -1,13 +1,13 @@
-import React , { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../api/index";
 import styles from "./../styles/form.module.scss";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
-import 'swiper/swiper-bundle.css';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper";
+import "swiper/swiper-bundle.css";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
 
 const Frontend = () => {
   const [bookList, setBookList] = useState([]);
@@ -18,9 +18,12 @@ const Frontend = () => {
     siteNumber: "",
     photo: null,
     author: "",
-    photoUrl: "",
+    photoUrl: bookList[0].imagePath,
     photoName: "",
   });
+
+  
+
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -47,19 +50,19 @@ const Frontend = () => {
     fetchAuthors();
   }, []);
 
-  const previewChosenBook = (book) =>{
-setChosenBook({
-  name: book.name,
+  const previewChosenBook = (book) => {
+    setChosenBook({
+      name: book.name,
       publishing: book.publishing,
       siteNumber: book.siteNumber,
       photo: book.file,
       photoUrl: book.imagePath,
       currantName: book.filename,
       author: book.author._id,
-  });
-console.log(chosenBook)
-  }
-console.log(bookList)
+    });
+    console.log(chosenBook);
+  };
+  console.log(bookList);
 
   return (
     <div>
@@ -126,26 +129,26 @@ console.log(bookList)
               </div>
             </div>
             <div class="row g-0" style={{ height: "50%" }}>
-            <div
-      className="bg-light g-0 text-light"
-      style={{
-        width: "calc(50%)",
-        height: 0,
-        paddingBottom: "calc(50%)",
-        position: "relative",
-      }}
-    >
-      <img
-        src={chosenBook.photoUrl}
-        style={{
-          position: "absolute",
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-        }}
-        alt="Zdjęcie książki"
-      />
-    </div>
+              <div
+                className="bg-light g-0 text-light"
+                style={{
+                  width: "calc(50%)",
+                  height: 0,
+                  paddingBottom: "calc(50%)",
+                  position: "relative",
+                }}
+              >
+                <img
+                  src={chosenBook.photoUrl}
+                  style={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                  alt="Zdjęcie książki"
+                />
+              </div>
             </div>
           </div>
           <div class="col-md-6 ">
@@ -165,36 +168,33 @@ console.log(bookList)
         </div>
       </div>
       <Swiper
-      // install Swiper modules
-      modules={[Navigation, Pagination, Scrollbar, A11y]}
-      spaceBetween={30}
-      slidesPerView={3}
-      navigation
-      pagination={{ clickable: true }}
-      scrollbar={{ draggable: true }}
-      onSwiper={(swiper) => console.log(swiper)}
-      onSlideChange={() => console.log('slide change')}
-    >{bookList.map((book, index) => (
-      <SwiperSlide key={index}>
-          <div>
-            <img
-              src={book.imagePath}
-              alt={book.name}
-              id="photo-current"
-              width="200"
-              height="200"
-              onClick={() => previewChosenBook(book)}
-            />
-            <hr/>
-            <button onClick={() => previewChosenBook(book)}>pokaż</button>
-          </div>
-        </SwiperSlide>
-        
-      ))
-    
-    }
-     
-    </Swiper>
+        // install Swiper modules
+        modules={[Navigation, Pagination, Scrollbar, A11y]}
+        spaceBetween={30}
+        slidesPerView={3}
+        navigation
+        pagination={{ clickable: true }}
+        scrollbar={{ draggable: true }}
+        onSwiper={(swiper) => console.log(swiper)}
+        onSlideChange={() => console.log("slide change")}
+      >
+        {bookList.map((book, index) => (
+          <SwiperSlide key={index}>
+            <div>
+              <img
+                src={book.imagePath}
+                alt={book.name}
+                id="photo-current"
+                width="200"
+                height="200"
+                onClick={() => previewChosenBook(book)}
+              />
+              <hr />
+              <button onClick={() => previewChosenBook(book)}>pokaż</button>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
   );
 };

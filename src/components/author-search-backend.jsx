@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/index";
+import styles from "./../styles/form.module.scss";
 import {
   TextField,
   List,
@@ -28,18 +29,32 @@ const AuthorSearchBackend = () => {
 
   return (
     <div>
-      <TextField
+      <input
         label="Search"
         value={searchText}
         onChange={handleSearchChange}
       />
-      <List>
-        {searchResults.map((author) => (
-          <ListItem key={author._id}>
-            <ListItemText primary={author.name} />
-          </ListItem>
-        ))}
-      </List>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Books</th>
+          </tr>
+        </thead>
+        <tbody>
+          {searchResults.map((author, index) => (
+            <tr key={index}>
+              <td>{author.name}</td>
+              
+              <td>{searchResults[index].books.map((book, index)=>(
+              <p key={index}>{book.name}</p>  
+              ))}
+              </td>
+              
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
