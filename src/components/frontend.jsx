@@ -18,10 +18,11 @@ const Frontend = () => {
     siteNumber: "",
     photo: null,
     author: "",
-    photoUrl: bookList[0].imagePath,
+    photoUrl: '',
     photoName: "",
   });
 
+ 
   
 
 
@@ -49,6 +50,8 @@ const Frontend = () => {
     fetchBooks();
     fetchAuthors();
   }, []);
+
+  
 
   const previewChosenBook = (book) => {
     setChosenBook({
