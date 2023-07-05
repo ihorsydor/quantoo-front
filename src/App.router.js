@@ -10,7 +10,7 @@ import AuthorSearchBackendComponent from "./views/author-search-backend";
 import BookAdd from "./views/book";
 import BookListComponent from "./views/book-list";
 import FrontendComponent from "./views/frontend";
-
+import MainComponent from "./views/main";
 const Router = () => {
   return (
     <Routes>
@@ -23,6 +23,7 @@ const Router = () => {
         <Route path="/book-list" element={<BookListComponent />} />
         <Route path="/author-search-backend" element={<AuthorSearchBackendComponent />} />
         <Route path="/frontend" element={<FrontendComponent />} />
+        <Route path="/" element={<MainComponent />} />
     </Routes>
   );
 };

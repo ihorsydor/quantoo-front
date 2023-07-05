@@ -8,9 +8,12 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
+import SwiperButtonComponent from "./swiperNavButton";
 
 const Frontend = () => {
-  const [bookList, setBookList] = useState([]);
+  const [bookList, setBookList] = useState([{
+    imagePath: ''
+  }]);
   const [authors, setAuthors] = useState([]);
   const [chosenBook, setChosenBook] = useState({
     name: "",
@@ -18,7 +21,7 @@ const Frontend = () => {
     siteNumber: "",
     photo: null,
     author: "",
-    photoUrl: '',
+    photoUrl: bookList[0].imagePath,
     photoName: "",
   });
 
@@ -31,7 +34,11 @@ const Frontend = () => {
       try {
         const response = await api.book.getAllBooks();
         setBookList(response);
-        // console.log(response);
+        setChosenBook((prevState)=>({
+          ...prevState,
+          photoUrl: response[0].imagePath
+        }))
+        
       } catch (error) {
         console.log(error);
       }
@@ -51,8 +58,8 @@ const Frontend = () => {
     fetchAuthors();
   }, []);
 
-  
-
+ 
+console.log(chosenBook.photoUrl)
   const previewChosenBook = (book) => {
     setChosenBook({
       name: book.name,
@@ -170,14 +177,15 @@ const Frontend = () => {
           </div>
         </div>
       </div>
-      <Swiper
+      <div>
+        <Swiper
         // install Swiper modules
         modules={[Navigation, Pagination, Scrollbar, A11y]}
         spaceBetween={30}
         slidesPerView={3}
         navigation
-        pagination={{ clickable: true }}
-        scrollbar={{ draggable: true }}
+        
+        
         onSwiper={(swiper) => console.log(swiper)}
         onSlideChange={() => console.log("slide change")}
       >
@@ -196,8 +204,12 @@ const Frontend = () => {
               <button onClick={() => previewChosenBook(book)}>pokaż</button>
             </div>
           </SwiperSlide>
+          
         ))}
+        <SwiperButtonComponent/>
       </Swiper>
+      </div>
+      
     </div>
   );
 };
