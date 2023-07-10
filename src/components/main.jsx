@@ -33,13 +33,17 @@ const Main = () => {
       try {
         const response = await api.book.getAllBooks();
         setBookList(response);
+
+        const firstBook = response[0];
+        const photoUrl = firstBook.imagePath ? firstBook.imagePath : null;
+
         setChosenBook((prevState) => ({
           ...prevState,
-          photoUrl: response[0].imagePath,
-          name: response[0].name,
-          publishing: response[0].publishing,
-          siteNumber: response[0].siteNumber,
-          author: response[0].author.name,
+          photoUrl: photoUrl,
+          name: firstBook.name,
+          publishing: firstBook.publishing,
+          siteNumber: firstBook.siteNumber,
+          author: firstBook.author.name,
         }));
       } catch (error) {
         console.log(error);
@@ -153,7 +157,11 @@ console.log(filteredBookList)
                 coś tam
               </div>
               <div class="col-10">
-                {bookList.map((book, index) => (
+                {bookList.map((book, index) => {
+                  if(!book.imagePath){
+                    return null
+                  }
+                  return(
                   <SwiperSlide key={index}>
                     <div>
                       <img
@@ -169,8 +177,8 @@ console.log(filteredBookList)
                         pokaż
                       </button>
                     </div>
-                  </SwiperSlide>
-                ))}
+                  </SwiperSlide>)
+               } )}
               </div>
               <div class="col-1"></div>
               <SwiperButtonNext>Next</SwiperButtonNext>
@@ -182,7 +190,8 @@ console.log(filteredBookList)
       </div>
       <div class="row">
         <div class="col">
-          <img
+          {chosenBook.photoUrl  && chosenBook.photoUrl !== '' && (
+              <img
             src={chosenBook.photoUrl}
             style={{
               width: "385px",
@@ -191,6 +200,8 @@ console.log(filteredBookList)
             }}
             alt="Zdjęcie książki"
           />
+          )}
+        
         </div>
         <div
           className="col"
