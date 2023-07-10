@@ -21,7 +21,7 @@ const Frontend = () => {
     siteNumber: "",
     photo: null,
     author: "",
-    photoUrl: bookList[0].imagePath,
+    photoUrl: null,
     photoName: "",
   });
 
@@ -34,9 +34,12 @@ const Frontend = () => {
       try {
         const response = await api.book.getAllBooks();
         setBookList(response);
+        const firstBook = response[0];
+        const photoUrl = firstBook.imagePath ? firstBook.imagePath : '';
+
         setChosenBook((prevState)=>({
           ...prevState,
-          photoUrl: response[0].imagePath
+          photoUrl: photoUrl,
         }))
         
       } catch (error) {
