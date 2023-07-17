@@ -35,3 +35,17 @@
     padding: 10px;
     margin-left: auto;
   }
+
+  .darkText {
+   
+    color: #000;
+    transition: color 0.3s ease;
+  }
+  
+  .darkText:hover {
+   
+    color: #333;
+    background-color: #f0f0f0;
+    
+    border-radius: 5px;
+  }

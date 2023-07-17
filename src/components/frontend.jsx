@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/index";
 import styles from "./../styles/form.module.scss";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Scrollbar, A11y } from "swiper";
-import "swiper/swiper-bundle.css";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/scrollbar";
-import SwiperButtonComponent from "./swiperNavButton";
+import {
+    Navigation,
+    Pagination,
+    Scrollbar,
+    A11y,
+    Controller,
+  } from "swiper/modules";
+  import { Swiper, SwiperSlide } from "swiper/react";
+  
+  import "swiper/css";
+  import "swiper/css/navigation";
+  import "swiper/css/pagination";
+  import "swiper/css/scrollbar";
 
 const Frontend = () => {
   const [bookList, setBookList] = useState([{
@@ -25,7 +30,7 @@ const Frontend = () => {
     photoName: "",
   });
 
- 
+  const [swiper, setSwiper] = useState();
   
 
 
@@ -180,37 +185,72 @@ console.log(chosenBook.photoUrl)
           </div>
         </div>
       </div>
-      <div>
-        <Swiper
-        // install Swiper modules
-        modules={[Navigation, Pagination, Scrollbar, A11y]}
-        spaceBetween={30}
-        slidesPerView={3}
-        navigation
-        
-        
-        onSwiper={(swiper) => console.log(swiper)}
-        onSlideChange={() => console.log("slide change")}
+      <div className="carousel-container"
+      style={{ marginTop: "20px" }}
       >
-        {bookList.map((book, index) => (
-          <SwiperSlide key={index}>
-            <div>
-              <img
-                src={book.imagePath}
-                alt={book.name}
-                id="photo-current"
-                width="200"
-                height="200"
-                onClick={() => previewChosenBook(book)}
-              />
-              <hr />
-              <button onClick={() => previewChosenBook(book)}>pokaż</button>
-            </div>
-          </SwiperSlide>
-          
-        ))}
-        <SwiperButtonComponent/>
-      </Swiper>
+        <Swiper
+          modules={[Navigation, Pagination, Scrollbar, A11y, Controller]}
+          spaceBetween={24}
+          slidesPerView={3}
+          navigation
+          updateOnWindowResize
+          observer
+          observeParents
+          initialSlide={2}
+          onSwiper={setSwiper}
+        >
+          {bookList.map((book, index) => {
+            console.log(book)
+            if (!book.imagePath) {
+              return null;
+            }
+            return (
+              <SwiperSlide key={index}>
+                <div>
+                  <img
+                    src={book.imagePath}
+                    alt={book.name}
+                    id="photo-current"
+                    display="block"
+                    width="100%"
+                    height="250px"
+                    object-fit="cover"
+                    onClick={() => previewChosenBook(book)}
+                  />
+                  <hr />
+                  <div className="text-center">
+                  <h2> {book.name}</h2>
+                  <h4> {book.author.name}</h4> 
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => previewChosenBook(book)}
+                    >
+                      Pokaż
+                    </button>
+                  </div>
+                </div>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+        <div
+          style={{
+            display: "flex",
+            marginTop: "35px",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            className="swiper-button-prev"
+            style={{ position: "unset", marginRight: "15px" }}
+            onClick={() => swiper.slidePrev()}
+          ></div>
+          <div
+            className="swiper-button-next"
+            style={{ position: "unset", marginLeft: "15px" }}
+            onClick={() => swiper.slideNext()}
+          ></div>
+        </div>
       </div>
       
     </div>

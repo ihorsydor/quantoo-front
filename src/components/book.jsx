@@ -9,7 +9,7 @@ const Form = () => {
     name: "",
     publishing: "",
     siteNumber: "",
-    author: '',
+    author: "",
   });
 
   const [authors, setAuthors] = useState([]);
@@ -62,53 +62,85 @@ const Form = () => {
 
   return (
     <div className={`${styles.formContainer} mt-4`}>
-  <div className="row">
-    <div className="col">
-      <input className="form-control" name="name" placeholder="Name" style={{ width: '200px' }} onChange={handleInputChange} />
-    </div>
-  </div>
-  <div className="row mt-4">
-    <div className="col">
-      <input className="form-control" name="publishing" placeholder="Publishing" style={{ width: '200px' }} onChange={handleInputChange} />
-    </div>
-  </div>
-  <div className="row mt-4">
-    <div className="col">
-      <input className="form-control" type="number" name="siteNumber" placeholder="Site Number" style={{ width: '200px' }} onChange={handleInputChange} />
-    </div>
-  </div>
-  <div className="row mt-4">
-    <div className="col">
-      <input className="form-control" 
-      name="image" 
-      type="file" 
-      onChange={handleImgSelect} />
-      {img && (
-        <div>
-          <img src={URL.createObjectURL(img)} alt="Uploaded Image" width="100" height="100" />
+      <div className="row">
+        <div className="col">
+          <input
+            className="form-control"
+            name="name"
+            placeholder="Name"
+            style={{ width: "200px" }}
+            onChange={handleInputChange}
+          />
         </div>
-      )}
+      </div>
+      <div className="row mt-4">
+        <div className="col">
+          <input
+            className="form-control"
+            name="publishing"
+            placeholder="Publishing"
+            style={{ width: "200px" }}
+            onChange={handleInputChange}
+          />
+        </div>
+      </div>
+      <div className="row mt-4">
+        <div className="col">
+          <input
+            className="form-control"
+            type="number"
+            name="siteNumber"
+            placeholder="Site Number"
+            style={{ width: "200px" }}
+            onChange={handleInputChange}
+          />
+        </div>
+      </div>
+      <div className="row mt-4">
+        <div className="col">
+          <input
+            className="form-control"
+            name="image"
+            type="file"
+            onChange={handleImgSelect}
+          />
+          {img && (
+            <div>
+              <img
+                src={URL.createObjectURL(img)}
+                alt="Uploaded Image"
+                width="100"
+                height="100"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="row mt-4">
+        <div className="col">
+          <select
+            className="form-select"
+            name="author"
+            value={input.author._id}
+            onChange={handleInputChange}
+          >
+            <option>Select an author</option>
+            {authors.map((author) => (
+              <option key={author._id} value={author._id}>
+                {author.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div className="row mt-4 justify-content-center">
+        <div className="col">
+          <button className="btn btn-primary" onClick={formSubmitHandle}>
+            Upload
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-  <div className="row mt-4">
-    <div className="col">
-      <select className="form-select" name="author" value={input.author._id} onChange={handleInputChange}>
-        <option>Select an author</option>
-        {authors.map((author) => (
-          <option key={author._id} value={author._id}>
-            {author.name}
-          </option>
-        ))}
-      </select>
-    </div>
-  </div>
-  <div className="row mt-4 justify-content-center">
-    <div className="col">
-      <button className="btn btn-primary" onClick={formSubmitHandle}>Upload</button>
-    </div>
-  </div>
-</div>
-
   );
 };
 

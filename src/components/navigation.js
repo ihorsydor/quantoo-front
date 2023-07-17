@@ -32,7 +32,7 @@ const Navigation = () => {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-  <button onClick={onMenuChange}>{textChange}</button>
+  <button className="btn btn-link" onClick={onMenuChange}>{textChange}</button>
 </div>
       <Navbar bg="light" expand="lg">
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -53,10 +53,20 @@ const Navigation = () => {
         </NavbarCollapse>
         ):(
           <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className={styles.navContainer}>
+          
             <div className="d-flex">
               <div className="p-2">
-                <Nav.Link as={Link} to="/author" className={styles.darkText}>
+                <Nav.Link 
+                as={Link} 
+                to="/author" 
+                className={styles.darkText}
+                // onMouseEnter={(e) => {
+                //   e.target.classList.add(styles.hovered);
+                // }}
+                // onMouseLeave={(e) => {
+                //   e.target.classList.remove(styles.hovered);
+                // }}
+                >
                   Author add
                 </Nav.Link>
               </div>
@@ -90,7 +100,7 @@ const Navigation = () => {
                 </Nav.Link>
               </div>
             </div>
-          </Nav>
+         
         </Navbar.Collapse>
         )
       }

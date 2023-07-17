@@ -1,14 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import api from "../api/index";
 import styles from "./../styles/form.module.scss";
-import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
-import { Navigation, Pagination, Scrollbar, A11y } from "swiper";
-import "swiper/swiper-bundle.css";
+import {
+  Navigation,
+  Pagination,
+  Scrollbar,
+  A11y,
+  Controller,
+} from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import SwiperButtonComponent from "./swiperNavButton";
+
+
 
 const Main = () => {
   const [bookList, setBookList] = useState([
@@ -23,11 +30,11 @@ const Main = () => {
     siteNumber: "",
     photo: null,
     author: "",
-    photoUrl: '',
+    photoUrl: "",
     photoName: "",
   });
-  
-  const[searchQuery, setSearchQuery]=useState('')
+
+  const [searchQuery, setSearchQuery] = useState("");
   useEffect(() => {
     const fetchBooks = async () => {
       try {
@@ -64,15 +71,18 @@ const Main = () => {
     fetchAuthors();
   }, []);
 
-  const handleSearchQuery = (e)=>{
-    setSearchQuery(e.target.value)
-  }
+  const handleSearchQuery = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
-  const filteredBookList = bookList.filter((book) =>
-  (book.name && book.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-  (book.author && book.author.name.toLowerCase().includes(searchQuery.toLowerCase()))
-);
-console.log(filteredBookList)
+  const filteredBookList = bookList.filter(
+    (book) =>
+      (book.name &&
+        book.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (book.author &&
+        book.author.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+  console.log(filteredBookList);
 
   console.log(chosenBook.photoUrl);
   const previewChosenBook = (book) => {
@@ -85,139 +95,153 @@ console.log(filteredBookList)
       currantName: book.filename,
       author: book.author.name,
     });
-    setSearchQuery('')
+    setSearchQuery("");
   };
   console.log(bookList);
 
-  const swiper = useSwiper();
-  const SwiperButtonNext = ({ children }) => {
-    const swiper = useSwiper();
-    return <button onClick={() => swiper.slideNext()}>{children}</button>;
-  };
-  const SwiperButtonPrev = ({ children }) => {
-    const swiper = useSwiper();
-    return <button onClick={() => swiper.slidePrev()}>{children}</button>;
-  };
+  
+
+  const [swiper, setSwiper] = useState();
 
   return (
     <div>
-      <div>
-      <div style={{ position: 'relative' }}>
-  <input
-    type="text"
-    value={searchQuery}
-    onChange={handleSearchQuery}
-    placeholder="Wyszukaj książkę"
-  />
-  {searchQuery.length > 1 && filteredBookList.length > 0 && (
-    <div
-      style={{
-        position: 'absolute',
-        top: '100%',
-        left: 0,
-        width: '100%',
-        background: '#fff',
-        border: '1px solid #ccc',
-        borderRadius: '4px',
-        padding: '10px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-        zIndex: 9999,
-      }}
-    >
-      {filteredBookList.map((book) => (
-        <p
-          onClick={() => previewChosenBook(book)}
-          key={book.id}
-          style={{ cursor: 'pointer' }}
-        >
-          {book.name} {book.author.name}
-        </p>
-      ))}
-    </div>
-  )}
-</div>
-
-        <div>
-          <h2>Wybierz książkę</h2>
-        </div>
-<div class="row">
-  <div class='col-1'></div>
-        <div class="col-10">
-          <Swiper
-            // install Swiper modules
-            // modules={[Navigation, Pagination, Scrollbar, A11y]}
-            spaceBetween={30}
-            slidesPerView={4}
-            // navigation
-            // onSwiper={(swiper) => console.log(swiper)}
-            // onSlideChange={() => console.log("slide change")}
-          >
-            <div class="row">
-              <div class="col-1">
-                coś tam
-              </div>
-              <div class="col-10">
-                {bookList.map((book, index) => {
-                  if(!book.imagePath){
-                    return null
-                  }
-                  return(
-                  <SwiperSlide key={index}>
-                    <div>
-                      <img
-                        src={book.imagePath}
-                        alt={book.name}
-                        id="photo-current"
-                        width="200"
-                        height="200"
-                        onClick={() => previewChosenBook(book)}
-                      />
-                      <hr />
-                      <button onClick={() => previewChosenBook(book)}>
-                        pokaż
-                      </button>
-                    </div>
-                  </SwiperSlide>)
-               } )}
-              </div>
-              <div class="col-1"></div>
-              <SwiperButtonNext>Next</SwiperButtonNext>
-            </div>
-            <SwiperButtonComponent  />
-          </Swiper>
-          {/* <div class='col-1'></div> */}
-        </div></div>
-      </div>
-      <div class="row">
-        <div class="col">
-          {chosenBook.photoUrl  && chosenBook.photoUrl !== '' && (
-              <img
-            src={chosenBook.photoUrl}
+      <div style={{ position: "relative" }}>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearchQuery}
+          placeholder="Wyszukaj książkę"
+          style={{ marginTop: "15px", marginBottom: "15px" }}
+        />
+        {searchQuery.length > 1 && filteredBookList.length > 0 && (
+          <div
             style={{
-              width: "385px",
-              height: "325px",
-              objectFit: "cover",
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              width: "25%",
+              background: "#fff",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              padding: "10px",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+              zIndex: 9999,
             }}
-            alt="Zdjęcie książki"
-          />
+          >
+            {filteredBookList.map((book) => (
+              <p
+                onClick={() => previewChosenBook(book)}
+                key={book.id}
+                style={{ cursor: "pointer" }}
+              >
+                {book.name} {book.author.name}
+              </p>
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="carousel-container">
+        <Swiper
+          modules={[Navigation, Pagination, Scrollbar, A11y, Controller]}
+          spaceBetween={24}
+          slidesPerView={3}
+          navigation
+          updateOnWindowResize
+          observer
+          observeParents
+          initialSlide={2}
+          onSwiper={setSwiper}
+        >
+          {bookList.map((book, index) => {
+            console.log(book)
+            if (!book.imagePath) {
+              return null;
+            }
+            return (
+              <SwiperSlide key={index}>
+                <div>
+                  <img
+                    src={book.imagePath}
+                    alt={book.name}
+                    id="photo-current"
+                    display="block"
+                    width="100%"
+                    height="250px"
+                    object-fit="cover"
+                    onClick={() => previewChosenBook(book)}
+                  />
+                  
+                  <div className="text-center">
+                  <h2> {book.name}</h2>
+                  <h4> {book.author.name}</h4> 
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => previewChosenBook(book)}
+                    >
+                      Pokaż
+                    </button>
+                  </div>
+                 
+                </div>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+        <div
+          style={{
+            display: "flex",
+            marginTop: "35px",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            className="swiper-button-prev"
+            style={{ position: "unset", marginRight: "15px" }}
+            onClick={() => swiper.slidePrev()}
+          ></div>
+          <div
+            className="swiper-button-next"
+            style={{ position: "unset", marginLeft: "15px" }}
+            onClick={() => swiper.slideNext()}
+          ></div>
+        </div>
+        <hr />
+      </div>
+      <div
+        class="row"
+        style={{
+          marginTop: "35px",
+          marginBottom: "35px",
+        }}
+      >
+        <div class="col">
+          {chosenBook.photoUrl && chosenBook.photoUrl !== "" && (
+            <img
+              src={chosenBook.photoUrl}
+              style={{
+                width: "385px",
+                height: "325px",
+                objectFit: "cover",
+              }}
+              alt="Zdjęcie książki"
+            />
           )}
-        
         </div>
         <div
           className="col"
           style={{ display: "flex", flexDirection: "column" }}
         >
           <div className="row" style={{ flex: "1 1 25%" }}>
-            Tytuł: {chosenBook.name}
+          <h2><b>Tytuł:</b> {chosenBook.name}</h2>
           </div>
           <div className="row" style={{ flex: "1 1 25%" }}>
-            Autor: {chosenBook.author}{" "}
+           <h3><b>Autor:</b> {chosenBook.author}</h3> 
           </div>
           <div className="row" style={{ flex: "1 1 25%" }}>
-            Wydawnictwo: {chosenBook.publishing}{" "}
+            <h4><b>Wydawnictwo:</b> {chosenBook.publishing}</h4>
           </div>
           <div className="row" style={{ flex: "1 1 25%" }}>
-            Ilość stron: {chosenBook.siteNumber}
+           <h4><b>Ilość stron:</b> {chosenBook.siteNumber}</h4> 
           </div>
         </div>
       </div>

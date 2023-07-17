@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Button, TextField, Select, MenuItem } from "@mui/material";
-import { Box } from "@mui/material";
+
 
 import api from "../api/index";
 import styles from "../styles/form.module.scss";
@@ -27,7 +26,7 @@ const Author = () => {
         console.log("Sukces");
         setAuthorData({
           name: "",
-          author: "",
+          country: "",
         });
       })
       .catch((error) => {
@@ -36,33 +35,35 @@ const Author = () => {
   };
 
   return (
-    <Box className={styles.box}>
+    <div className={styles.box}>
       <form className={styles.form} onSubmit={authorSubmitHandle}>
     <div className={styles.formElementWidth}>
-        <TextField
+        <input
           label="Author name"
           name="name"
           value={authorData.name}
-          className={styles.formElementWidth}
+          className="form-control"
+          style={{ width: "200px" }}
           onChange={handleChange}
         />
 </div>
 <div className={styles.formElementWidth}>
-        <TextField
+        <input
           label="Country"
           name="country"
           value={authorData.country}
-          className={styles.formElementWidth}
+          className="form-control"
+          style={{ width: "200px" }}
           onChange={handleChange}
         />
 </div>
         
 
-        <Button variant="contained" type="submit" className={styles.buttonSpacing}>
+        <button className="btn btn-primary" onClick={authorSubmitHandle}>
           Wyślij
-        </Button>
+        </button>
       </form>
-    </Box>
+    </div>
   );
 };
 
