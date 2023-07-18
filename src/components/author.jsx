@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-
 import api from "../api/index";
 import styles from "../styles/form.module.scss";
 
@@ -37,27 +36,26 @@ const Author = () => {
   return (
     <div className={styles.box}>
       <form className={styles.form} onSubmit={authorSubmitHandle}>
-    <div className={styles.formElementWidth}>
-        <input
-          label="Author name"
-          name="name"
-          value={authorData.name}
-          className="form-control"
-          style={{ width: "200px" }}
-          onChange={handleChange}
-        />
-</div>
-<div className={styles.formElementWidth}>
-        <input
-          label="Country"
-          name="country"
-          value={authorData.country}
-          className="form-control"
-          style={{ width: "200px" }}
-          onChange={handleChange}
-        />
-</div>
-        
+        <div className={styles.formElementWidth}>
+          <input
+            placeholder="Author name"
+            name="name"
+            value={authorData.name}
+            className="form-control"
+            style={{ width: "200px" }}
+            onChange={handleChange}
+          />
+        </div>
+        <div className={styles.formElementWidth}>
+          <input
+            placeholder="Country"
+            name="country"
+            value={authorData.country}
+            className="form-control"
+            style={{ width: "200px" }}
+            onChange={handleChange}
+          />
+        </div>
 
         <button className="btn btn-primary" onClick={authorSubmitHandle}>
           Wyślij

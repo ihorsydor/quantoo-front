@@ -89,9 +89,9 @@ const AuthorList = () => {
       <table className="table">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Country</th>
-            <th>Action</th>
+            <th>Imię i nazwisko</th>
+            <th>Kraj</th>
+            <th>Usuwanie i edycja</th>
           </tr>
         </thead>
         <tbody>
@@ -101,10 +101,10 @@ const AuthorList = () => {
               <td>{author.country}</td>
               <td>
                 <button
-                  className="btn btn-outline-secondary"
+                  className="btn btn-outline-primary"
                   onClick={() => handleDelete(author._id)}
                 >
-                  Kasuj
+                  Usuń
                 </button>
                 <button
                   className="btn btn-outline-primary"

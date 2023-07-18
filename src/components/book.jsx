@@ -28,7 +28,9 @@ const Form = () => {
   }, []);
 
   const handleImgSelect = (event) => {
+    
     setImg(event.target.files[0]);
+    
   };
 
   const handleInputChange = (event) => {
@@ -47,7 +49,8 @@ const Form = () => {
       }));
     }
   };
-  const formSubmitHandle = () => {
+  const formSubmitHandle = (e) => {
+    e.preventDefault();
     if (img) {
       const formData = new FormData();
       formData.append("image", img);
@@ -57,11 +60,19 @@ const Form = () => {
       formData.append("author", input.author._id);
 
       api.book.createNewBook(formData);
+      setImg(null);
+      setInput({
+        name: "",
+        publishing: "",
+        siteNumber: "",
+        author: "",
+      })
     }
   };
 
   return (
-    <div className={`${styles.formContainer} mt-4`}>
+    <div className={styles.box}>
+      <form className={styles.form}>
       <div className="row">
         <div className="col">
           <input
@@ -69,6 +80,7 @@ const Form = () => {
             name="name"
             placeholder="Name"
             style={{ width: "200px" }}
+            value={input.name}
             onChange={handleInputChange}
           />
         </div>
@@ -80,6 +92,7 @@ const Form = () => {
             name="publishing"
             placeholder="Publishing"
             style={{ width: "200px" }}
+            value={input.publishing}
             onChange={handleInputChange}
           />
         </div>
@@ -91,6 +104,7 @@ const Form = () => {
             type="number"
             name="siteNumber"
             placeholder="Site Number"
+            value={input.siteNumber}
             style={{ width: "200px" }}
             onChange={handleInputChange}
           />
@@ -102,6 +116,7 @@ const Form = () => {
             className="form-control"
             name="image"
             type="file"
+            style={{ width: "280px" }}
             onChange={handleImgSelect}
           />
           {img && (
@@ -121,10 +136,11 @@ const Form = () => {
           <select
             className="form-select"
             name="author"
-            value={input.author._id}
+            value={input.author && input.author._id ? input.author._id : ""}
+            style={{ width: "200px" }}
             onChange={handleInputChange}
           >
-            <option>Select an author</option>
+            <option value="">Select an author</option>
             {authors.map((author) => (
               <option key={author._id} value={author._id}>
                 {author.name}
@@ -140,6 +156,7 @@ const Form = () => {
           </button>
         </div>
       </div>
+      </form>
     </div>
   );
 };
