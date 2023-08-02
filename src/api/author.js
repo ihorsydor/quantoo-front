@@ -75,8 +75,10 @@ export default {
         try {
           const responseAsBlob = await fetch(`${baseUrl}/author/search?query=${query}`, {
             credentials: 'include',
-          });
+          })
+          console.log("Odpowiedź przed response.json():", responseAsBlob);
           const response = await responseAsBlob.json();
+          console.log("Odpowiedź po response.json():", response);
           return response;
         } catch (error) {
           console.log(error);

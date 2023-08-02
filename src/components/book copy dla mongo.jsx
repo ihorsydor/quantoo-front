@@ -35,11 +35,9 @@ const Form = () => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    console.log(event.target.name)
     if (name === "author") {
-      console.log(authors)
-      const selectedAuthor = authors.find((author) => author.id == value);
-console.log(selectedAuthor)
+      const selectedAuthor = authors.find((author) => author._id === value);
+
       setInput((prevState) => ({
         ...prevState,
         author: selectedAuthor,
@@ -55,14 +53,12 @@ console.log(selectedAuthor)
     e.preventDefault();
     if (img) {
       const formData = new FormData();
-     formData.append("image", img);
+      formData.append("image", img);
       formData.append("name", input.name);
       formData.append("publishing", input.publishing);
       formData.append("siteNumber", input.siteNumber);
-      formData.append("author", input.author.id);
-      formData.forEach((value, key) => {
-        console.log(key, value);
-      })
+      formData.append("author", input.author._id);
+
       api.book.createNewBook(formData);
       setImg(null);
       setInput({
@@ -140,13 +136,13 @@ console.log(selectedAuthor)
           <select
             className="form-select"
             name="author"
-            value={input.author && input.author.id ? input.author.id : ""}
+            value={input.author && input.author._id ? input.author._id : ""}
             style={{ width: "200px" }}
             onChange={handleInputChange}
           >
             <option value="">Select an author</option>
             {authors.map((author) => (
-              <option key={author.id} value={author.id}>
+              <option key={author._id} value={author._id}>
                 {author.name}
               </option>
             ))}

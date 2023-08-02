@@ -12,13 +12,17 @@ const AuthorSearchBackend = () => {
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
+
   const handleSearchChange = async (event) => {
     const { value } = event.target;
     setSearchText(value);
     if (value.length >= 3) {
       try {
         const response = await api.author.searchAuthors(value);
-        setSearchResults(response);
+        
+        setSearchResults(response)
+       
+        console.log(response)
       } catch (error) {
         console.log(error);
       }
@@ -26,6 +30,10 @@ const AuthorSearchBackend = () => {
       setSearchResults([]);
     }
   };
+  
+  useEffect(() => {
+    console.log(searchResults); 
+  }, [searchResults]);
 
   return (
     <div>

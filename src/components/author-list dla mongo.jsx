@@ -40,7 +40,7 @@ const AuthorList = () => {
       console.log(authorId)
       await api.author.deleteAuthor(authorId);
       setAuthorList((prevAuthorList) =>
-        prevAuthorList.filter((author) => author.id !== authorId)
+        prevAuthorList.filter((author) => author._id !== authorId)
       );
     } catch (error) {
       console.log(error);
@@ -72,7 +72,7 @@ const AuthorList = () => {
     try {
       const response = await api.author.editAuthor(
         editAuthorData,
-        selectedAuthor.id
+        selectedAuthor._id
       );
       
 
@@ -103,7 +103,7 @@ const AuthorList = () => {
               <td>
                 <button
                   className="btn btn-outline-primary"
-                  onClick={() => handleDelete(author.id)}
+                  onClick={() => handleDelete(author._id)}
                 >
                   Usuń
                 </button>

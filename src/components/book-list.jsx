@@ -48,10 +48,10 @@ const BookList = () => {
   const handleDelete = async (bookId) => {
     try {
       // console.log(bookId);
-      const bookToDelete = bookList.find((book) => book._id === bookId);
-      await api.book.deleteBook(bookId, bookToDelete.filename);
+      const bookToDelete = bookList.find((book) => book.id === bookId);
+      await api.book.deleteBook(bookId, bookToDelete.newFileName);
       setBookList((prevBookList) =>
-        prevBookList.filter((book) => book._id !== bookId)
+        prevBookList.filter((book) => book.id !== bookId)
       );
     } catch (error) {
       console.log(error);
@@ -67,8 +67,8 @@ const BookList = () => {
       siteNumber: book.siteNumber,
       photo: book.file,
       photoUrl: book.imagePath,
-      currantName: book.filename,
-      author: book.author._id,
+      currantName: book.newFileName,
+      author: book.author,
     });
     // console.log(editBookData);
     setEditModalOpen(true);
@@ -113,7 +113,7 @@ const BookList = () => {
     formData.append("author", editBookData.author);
     formData.append("currantName", editBookData.currantName);
 
-    await api.book.editBook(selectedBook._id, formData);
+    await api.book.editBook(selectedBook.id, formData);
     const updatedBookList = await api.book.getAllBooks();
     setBookList(updatedBookList);
     setEditModalOpen(false);
@@ -148,11 +148,11 @@ const BookList = () => {
                   alt={book.name}
                 />
               </td>
-              <td>{book.author.name}</td>
+              <td>{book.author_name}</td>
               <td>
                 <button
                   className="btn btn-outline-secondary"
-                  onClick={() => handleDelete(book._id)}
+                  onClick={() => handleDelete(book.id)}
                 >
                   Delete
                 </button>
@@ -272,7 +272,7 @@ const BookList = () => {
                         Select an author
                       </option>
                       {authors.map((author) => (
-                        <option key={author._id} value={author._id}>
+                        <option key={author.id} value={author.id}>
                           {author.name}
                         </option>
                       ))}

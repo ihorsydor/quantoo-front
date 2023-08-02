@@ -26,28 +26,32 @@ export default {
         }
     },
     createNewBook: book => {
+      console.log(book)
         fetch(`${baseUrl}/book`, {
-            method: 'POST',
+                      method: 'POST',
             body: book
           })
-            .then(response => {
-              if (response.ok) {
+          .then(response => {
+            if (response.ok) {
                 console.log('File uploaded successfully');
-                
-              } else {
-                console.error('Error uploading file:', response.statusText);
-                
-              }
-            })
-            .catch(error => {
-              console.error('Error uploading file:', error);
-              
-            });
+                return response.json();
+            } else {
+                throw new Error('Error uploading file: ' + response.statusText);
+            }
+        })
+        .then(data => {
+            // Tutaj otrzymasz dane JSON z serwera po przekonwertowaniu
+            console.log(data);
+        })
+        .catch(error => {
+            // Obsługa błędu
+            console.error(error);
+        });
     },
     editBook: async (_id, updatedBook) => {
         try {
           const response = await fetch(`${baseUrl}/book/${_id}`, {
-            method: "PUT",
+            method: "POST",
             body: updatedBook,
           });
       
